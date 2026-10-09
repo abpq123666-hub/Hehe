@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday Kuchu Puchu 😚❤️</title>
+  <!-- Canvas Confetti & SweetAlert2 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', 'Segoe UI', sans-serif; }
+    body {
+      background: linear-gradient(135deg, #e0e7ff, #fce7f3, #dcfce7, #fef3c7);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+      overflow-x: hidden;
+      color: #334155;
+    }
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.9);
+      border-radius: 28px;
+      padding: 30px 20px;
+      max-width: 450px;
+      width: 100%;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+      text-align: center;
+      position: relative;
+    }
+    .main-title {
+      font-size: 2rem;
+      color: #e11d48;
+      margin-bottom: 15px;
+      line-height: 1.3;
+      text-shadow: 0 2px 10px rgba(225, 29, 72, 0.15);
+    }
+    p { font-size: 1.05rem; color: #475569; margin-bottom: 20px; line-height: 1.5; }
+    .btn-group { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; position: relative; min-height: 100px; justify-content: center;}
+    .btn {
+      background: #6366f1; color: white; border: none; padding: 14px 24px; font-size: 1.05rem;
+      font-weight: 600; border-radius: 50px; cursor: pointer; transition: all 0.2s ease;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3); outline: none;
+    }
+    .btn:hover { transform: translateY(-2px); background: #4f46e5; }
+    .btn-secondary { background: #ec4899; box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3); }
+    .btn-secondary:hover { background: #db2777; }
+    .btn-run { position: absolute; transition: all 0.2s ease; width: 100%; }
+    .music-bar {
+      position: fixed; top: 15px; right: 15px; background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px); padding: 8px 16px; border-radius: 30px; font-size: 0.85rem;
+      display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); z-index: 100;
+      font-weight: bold; color: #6366f1;
+    }
+    .music-btn { border: none; background: #6366f1; color: white; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 0.9rem;}
+    .progress-bar { width: 100%; background: #e2e8f0; height: 8px; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, #6366f1, #ec4899); width: 5%; transition: width 0.4s ease; }
+    
+    /* Still Sunflower */
+    .sunflower { font-size: 4rem; display: inline-block; margin: 15px 0; }
+    
+    .ice-cream-img { font-size: 3.5rem; margin: 10px; display: inline-block; animation: bounce 2s infinite; }
+    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+    /* Custom Hug Animation */
+    .anime-hug-box {
+      font-size: 5rem;
+      animation: hugPulse 1.2s infinite ease-in-out;
+      margin: 10px 0;
+    }
+    @keyframes hugPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15) rotate(5deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="music-bar">
+    <span>🎵 Soothing Birthday Tune</span>
+    <button class="music-btn" onclick="playMelody()" id="mBtn">🔊</button>
+  </div>
+
+  <div class="card" id="mainCard">
+    <div class="progress-bar"><div class="progress-fill" id="pFill"></div></div>
+    
+    <div id="contentArea">
+      <h1 class="main-title">Happy Birthday Kuchu Puchu 😚❤️</h1>
+      <p>Aapke special day ke liye ek chota sa surprise hai!</p>
+      <div class="btn-group">
+        <button class="btn btn-secondary" onclick="goToDramaticScreen()">Next 💖</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let audioCtx = null;
+
+    // Soothing Funny Melody Synthesizer (Works 100% Everywhere)
+    function playMelody() {
+      if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if(audioCtx.state === 'suspended') audioCtx.resume();
+
+      const notes = [
+        {f: 264, d: 0.3}, {f: 264, d: 0.3}, {f: 297, d: 0.6}, {f: 264, d: 0.6}, {f: 352, d: 0.6}, {f: 330, d: 1.0},
+        {f: 264, d: 0.3}, {f: 264, d: 0.3}, {f: 297, d: 0.6}, {f: 264, d: 0.6}, {f: 396, d: 0.6}, {f: 352, d: 1.0},
+        {f: 264, d: 0.3}, {f: 264, d: 0.3}, {f: 528, d: 0.6}, {f: 440, d: 0.6}, {f: 352, d: 0.6}, {f: 330, d: 0.6}, {f: 297, d: 0.9}
+      ];
+
+      let now = audioCtx.currentTime;
+      notes.forEach((n) => {
+        let osc = audioCtx.createOscillator();
+        let gain = audioCtx.createGain();
+        osc.type = 'sine'; // Soft soothing tone
+        osc.frequency.setValueAtTime(n.f, now);
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + n.d);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + n.d);
+        now += n.d + 0.05;
+      });
+    }
+
+    function popConfetti() {
+      confetti({ particleCount: 90, spread: 80, origin: { y: 0.6 } });
+    }
+
+    function updateProgress(percent) {
+      document.getElementById('pFill').style.width = percent + '%';
+    }
+
+    function goToDramaticScreen() {
+      playMelody();
+      popConfetti();
+      updateProgress(10);
+      const area = document.getElementById('contentArea');
+      area.innerHTML = `
+        <h1 class="main-title">Let's get dramatic Kuchu Puchu 😌😁</h1>
+        <p>Aapke Birthday ke din ek chota sa dramatic test hone wala hai! Ready ho?</p>
+        <div class="btn-group">
+          <button class="btn" onclick="startApp()">Start Dramatic Test 🚀</button>
+        </div>
+      `;
+    }
+
+    function cuteWarning() {
+      playMelody();
+      Swal.fire({
+        title: 'Arey Re! 🥺',
+        text: 'pyar se choose kro na bubuuuu 👉🏻👈🏻',
+        icon: 'info',
+        confirmButtonText: 'Okay Baby 💕',
+        confirmButtonColor: '#ec4899'
+      });
+    }
+
+    function wishAndNext(nextStepNum) {
+      popConfetti();
+      playMelody();
+      Swal.fire({
+        title: 'Happy Birthdayyy 🫂💗',
+        text: 'Hehehe cute choice! Moving to next step...',
+        icon: 'success',
+        confirmButtonText: 'Next Question! ✨',
+        confirmButtonColor: '#ec4899'
+      }).then(() => {
+        renderStep(nextStepNum);
+      });
+    }
+
+    function startApp() {
+      renderStep(1);
+    }
+
+    function renderStep(s) {
+      popConfetti();
+      playMelody();
+      const area = document.getElementById('contentArea');
+
+      if(s === 1) {
+        updateProgress(25);
+        area.innerHTML = `
+          <h1>Question 1 😜</h1>
+          <p><strong>Do you like me? 🤔</strong></p>
+          <div class="btn-group">
+            <button class="btn" onclick="cuteWarning()">Yes</button>
+            <button class="btn btn-secondary" onclick="wishAndNext(2)">Yes Baby 💕</button>
+          </div>
+        `;
+      }
+      else if(s === 2) {
+        updateProgress(40);
+        area.innerHTML = `
+          <h1>Question 2 😂😂</h1>
+          <p><strong>Do you love me? 😁</strong></p>
+          <div class="btn-group">
+            <button class="btn" onclick="cuteWarning()">Yes</button>
+            <button class="btn" onclick="cuteWarning()">Idk 🤔</button>
+            <button class="btn btn-secondary" onclick="wishAndNext(3)">Yes Baby 😁💖</button>
+          </div>
+        `;
+      }
+      else if(s === 3) {
+        updateProgress(55);
+        area.innerHTML = `
+          <h1>Question 3 🐣</h1>
+          <p><strong>Are you my Kuchu Puchu?</strong></p>
+          <div class="btn-group">
+            <button class="btn" onclick="cuteWarning()">Yes</button>
+            <button class="btn btn-secondary" onclick="wishAndNext(4)">Yes Baby 🐣✨</button>
+          </div>
+        `;
+      }
+      else if(s === 4) {
+        updateProgress(70);
+        area.innerHTML = `
+          <h1>Question 4 😤</h1>
+          <p><strong>Do you get irritated by me? 🥺</strong></p>
+          <div class="btn-group" style="height:120px;">
+            <button class="btn btn-run" id="yesIrritate" onmouseover="moveBtn()" onclick="moveBtn()">Yes 😜</button>
+            <button class="btn btn-secondary" style="margin-top:60px;" onclick="wishAndNext(5)">Never Baby 🥺✨</button>
+          </div>
+        `;
+      }
+      else if(s === 5) {
+        updateProgress(85);
+        area.innerHTML = `
+          <h1>Secret Reveal 🕵️‍♂️</h1>
+          <p><strong>Do you know who is in your heart?</strong></p>
+          <div class="btn-group">
+            <button class="btn btn-secondary" onclick="revealMann()">Who? 👀</button>
+          </div>
+        `;
+      }
+      else if(s === 6) {
+        updateProgress(95);
+        area.innerHTML = `
+          <h1>One More Secret... 😉</h1>
+          <p><strong>Do you know Mann ke paas kya hai?</strong></p>
+          <div class="btn-group">
+            <button class="btn" onclick="revealYou()">Kya? 🤔</button>
+          </div>
+        `;
+      }
+      else if(s === 7) {
+        updateProgress(100);
+        area.innerHTML = `
+          <h1 class="main-title">Happy Birthday Kuchu Puchu 😚❤️</h1>
+          <div class="sunflower">🌻</div>
+          <p style="font-size:0.95rem; text-align:left;">
+            Wish you endless happiness, boundless success, good health, and infinite smiles! May every single dream of yours come true this year. Thank you for being such an amazingly deep and special friend. 🤗✨
+          </p>
+          <div>
+            <div class="ice-cream-img">🍨</div>
+            <div class="ice-cream-img">🥭</div>
+            <p style="font-weight:600; color:#4338ca;">Special Birthday Delivery:<br>Butterscotch & Alphonso Mango Ice-Cream! 🍦😋</p>
+          </div>
+          <div class="btn-group" style="margin-top:15px;">
+            <button class="btn btn-secondary" onclick="virtualHug()">Virtual Warm Hug 🤗</button>
+          </div>
+        `;
+      }
+    }
+
+    function moveBtn() {
+      const btn = document.getElementById('yesIrritate');
+      const x = Math.random() * 180 - 90;
+      const y = Math.random() * 60 - 30;
+      btn.style.transform = `translate(${x}px, ${y}px)`;
+      Swal.fire({
+        toast: true,
+        position: 'top',
+        icon: 'warning',
+        title: 'Option bhag raha hai! \'Never Baby\' select karo! 😜',
+        showConfirmButton: false,
+        timer: 1500
+      });
+    }
+
+    function revealMann() {
+      popConfetti();
+      playMelody();
+      Swal.fire({
+        title: '✨ Mann 🌻 ✨',
+        text: 'Aapke dil me sirf Mann hai!',
+        icon: 'success',
+        confirmButtonText: 'Happy Birthdayyy 🫂💗',
+        confirmButtonColor: '#ec4899'
+      }).then(() => renderStep(6));
+    }
+
+    function revealYou() {
+      popConfetti();
+      playMelody();
+      Swal.fire({
+        title: '💖 YOU! (My Kuchu Puchu) 💖',
+        text: 'Mann ke paas pure world ki sabse cute cheez hai — YOU! 🥳',
+        icon: 'success',
+        confirmButtonText: 'Happy Birthdayyy 🫂💗',
+        confirmButtonColor: '#6366f1'
+      }).then(() => renderStep(7));
+    }
+
+    function virtualHug() {
+      popConfetti();
+      playMelody();
+      Swal.fire({
+        title: '🤗 Mega Warm Anime Hug! 🤗',
+        html: '<div class="anime-hug-box">🫂✨💖</div><p>Sending you the tightest & warmest birthday hug ever! Have a wonderful day! ❤️</p>',
+        confirmButtonText: 'Happy Birthdayyy 🫂💗',
+        confirmButtonColor: '#ec4899'
+      });
+    }
+
+    window.onload = function() {
+      popConfetti();
+    };
+  </script>
+</body>
+</html>
